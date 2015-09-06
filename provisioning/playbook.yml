@@ -1,0 +1,45 @@
+---
+
+- hosts: all
+  tasks:
+    - name: "install epel-release"
+      yum: name=epel-release state=latest
+      sudo: yes
+
+    - name: "install node"
+      yum: name=nodejs state=latest
+      sudo: yes
+
+    - name: "install npm"
+      yum: name=npm state=latest
+      sudo: yes
+
+    - name: "install yo"
+      npm: name="yo" global=yes
+      sudo: yes
+
+    - name: "install generator-hubot"
+      npm: name="generator-hubot" global=yes
+      sudo: yes
+
+    - name: "install redis"
+      yum: name="redis" state=latest
+      sudo: yes
+
+    - name: "ensure redis is running"
+      service:  name="redis.service" state=started
+      sudo: yes
+
+    - name: "check folder"
+      stat: path=/home/vagrant/hubot
+      register: check_folder
+
+    - name: "hubot folder"
+      file: path=/home/vagrant/hubot state=directory mode=0755
+      when: check_folder.stat.exists == false
+
+    - name: "install hubot"
+      command: "yo hubot --owner='Rubem Nakamura <rubem.nakamura@gmail.com' --name 'hubot' --description='my servant' --defaults"
+      args:
+        chdir: /home/vagrant/hubot
+      when: check_folder.stat.exists == false
