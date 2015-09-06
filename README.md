@@ -12,7 +12,7 @@ vagrant ssh
 cd hubot/
 ./bin/hubot
 
-hubot echo test
+hubot> hubot echo test
 ```
 
 ## Contributing
